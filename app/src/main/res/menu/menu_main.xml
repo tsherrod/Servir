@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.tsherrod.servir.MainActivity">
+    <item
+        android:icon="@drawable/houseicon"
+        android:orderInCategory="101"
+        android:title="@string/action_settings" />
+</menu>

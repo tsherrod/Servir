@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Servir</string>
+    <string name="action_settings">Settings</string>
+    <string-array name="type_list">
+        <item>NDVI</item>
+        <item>EVI</item>
+        <item>EVI 2</item>
+        <item>NDMI</item>
+        <item>NDWI</item>
+    </string-array>
+
+    <string name="about_app">About the app\n\n
+        \n     here\n\n
+
+        \n\n\n\n\n
+        \n test\n\n\n
+        end
+    </string>
+    <string name="title_activity_maps">Map</string>
+
+</resources>

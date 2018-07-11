@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical"
+    android:configChanges="orientation"
+    android:hardwareAccelerated="true"
+    android:screenOrientation="portrait">
+
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/my_toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="42dp"
+      android:background="?attr/colorPrimary"
+      android:elevation="4dp"
+      android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+      app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+      tools:layout_editor_absoluteX="0dp"
+      tools:layout_editor_absoluteY="0dp" />
+
+  <!--  <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        />-->
+  <!-- app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp"-->
+
+  <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:map="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      android:id="@+id/map"
+      android:name="com.google.android.gms.maps.SupportMapFragment"
+      android:layout_width="match_parent"
+      android:layout_height="686dp"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentStart="true"
+      map:layout_constraintBottom_toBottomOf="parent"
+      map:layout_constraintEnd_toEndOf="parent"
+      map:layout_constraintHorizontal_bias="0.0"
+      map:layout_constraintStart_toStartOf="parent"
+      map:layout_constraintTop_toBottomOf="@+id/TFaddress"
+      map:layout_constraintVertical_bias="0.0"
+      tools:context=".MapsActivity" />
+
+  <EditText
+      android:id="@+id/TFaddress"
+      android:layout_width="286dp"
+      android:layout_height="52dp"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentTop="true"
+      android:layout_marginLeft="4dp"
+      android:layout_marginStart="4dp"
+      android:backgroundTint="@color/colorPrimary"
+      android:ems="10"
+      android:hint="Enter address, city/state, or zip code"
+      android:inputType="textPersonName"
+      android:textSize="16dp"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
+
+  <Button
+      android:id="@+id/bsearch"
+      android:layout_width="102dp"
+      android:layout_height="37dp"
+      android:layout_above="@+id/map"
+      android:layout_alignParentEnd="true"
+      android:layout_marginBottom="4dp"
+      android:layout_marginEnd="8dp"
+      android:layout_marginLeft="2dp"
+      android:layout_marginRight="8dp"
+      android:layout_marginStart="2dp"
+      android:layout_marginTop="4dp"
+      android:background="@color/colorPrimary"
+      android:onClick="onSearch"
+      android:padding="8dp"
+      android:shadowColor="@color/colorPrimaryDark"
+      android:text="Search"
+      android:textColor="@color/White"
+      app:layout_constraintBottom_toTopOf="@+id/map"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.39"
+      app:layout_constraintStart_toEndOf="@+id/TFaddress"
+      app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+      app:layout_constraintVertical_bias="0.32999998" />
+
+  <Button
+      android:id="@+id/mapsNext"
+      android:layout_width="118dp"
+      android:layout_height="44dp"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentEnd="true"
+      android:layout_marginBottom="8dp"
+      android:layout_marginEnd="44dp"
+      android:layout_marginRight="44dp"
+      android:layout_marginTop="8dp"
+      android:background="#359c5e"
+      android:onClick="buttonOnClick"
+      android:padding="8dp"
+      android:text="Submit Area"
+      android:textColor="#ffffff"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/bsearch"
+      app:layout_constraintVertical_bias="0.914" />
+
+</android.support.constraint.ConstraintLayout>
