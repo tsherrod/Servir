@@ -2,49 +2,88 @@ package com.example.tsherrod.servir;
 
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.AdapterView;
+import android.util.Log;
 import android.support.v7.widget.Toolbar;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.VisibleRegion;
-import android.widget.TextView;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DatePickerDialog.OnDateSetListener;
-import android.view.MenuItem;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.content.Intent;
+
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.components.YAxis.AxisDependency;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.android.gms.maps.model.TileProvider;
+import com.google.android.gms.maps.model.UrlTileProvider;
+
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.CheckBox;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Locale;
 
 
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.TileOverlay;
+
+import android.widget.SeekBar;
+import android.widget.TextView;
+
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Map;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
+import static com.example.tsherrod.servir.MapsActivity.imageJson;
 import static com.example.tsherrod.servir.MapsActivity.mMap;
-import static com.example.tsherrod.servir.MapsActivity.response;
-import static com.example.tsherrod.servir.MapsActivity.response2;
 import static com.example.tsherrod.servir.MapsActivity.timeJson;
-import static com.example.tsherrod.servir.R.id.startDateText;
-import static com.example.tsherrod.servir.R.id.text;
-import static com.example.tsherrod.servir.R.id.type_spinner;
 
-public class Finish extends AppCompatActivity{
-    public LatLngBounds curScreen =mMap.getProjection().getVisibleRegion().latLngBounds;;
+public class Finish extends AppCompatActivity implements OnChartValueSelectedListener, OnSeekBarChangeListener, OnMapReadyCallback {
+    public LatLngBounds curScreen =mMap.getProjection().getVisibleRegion().latLngBounds;
+    private LineChart mChart;
+    private ArrayList <Integer>timeSeriesDates = new ArrayList<Integer>();
+
+    private static final int TRANSPARENCY_MAX = 100;
+    private static final String MAP_URL =
+           "https://earthengine.googleapis.com/map/";
+    private TileOverlay mapTiles;
+    private SeekBar mTransparencyBar;
+    private double ycoord= mMap.getCameraPosition().target.latitude;
+    private double xcoord = mMap.getCameraPosition().target.longitude;
+
 
     @SuppressLint("ResourceType")
     @Override
@@ -58,65 +97,151 @@ public class Finish extends AppCompatActivity{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationIcon(R.drawable.houseicon);
+//TODO this frikkin graph
+        mChart = findViewById(R.id.lineChart);
+        mChart.setOnChartValueSelectedListener(this);
+        //List of entries containing the coordinates
+        List<Entry> timeSeriesCoords = new ArrayList<Entry>();
+
+        mTransparencyBar = (SeekBar) findViewById(R.id.transparencySeekBar);
+        mTransparencyBar.setMax(TRANSPARENCY_MAX);
+        mTransparencyBar.setProgress(0);
+
+        SupportMapFragment mapFragment =
+                (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.tilemap);
+        mapFragment.getMapAsync(this);
 
 
-        //GET THE VISIBLE REGION'S COORDINATES
-        /*LatLngBounds curScreen = mMap.getProjection().getVisibleRegion().latLngBounds;*/
+if (timeJson!=null) {
+    try {
+        JSONArray timeSeries = timeJson.getJSONArray("timeseries");
+
+        for (int i = 0; i < timeSeries.length(); i++) {
+            JSONArray coords = timeSeries.getJSONArray(i);
 
 
-        TextView responseView = findViewById(R.id.reponseText);
-        responseView.setText(Arrays.toString(new JSONObject[]{timeJson}));
+            Entry coordsEntry = new Entry((float) coords.getDouble(0), (float) coords.getDouble(1));
+            timeSeriesCoords.add(coordsEntry);
+        }
 
 
-        //northeast corner
-        double northeastLat = curScreen.northeast.latitude;
-        String northeastLatString = Double.toString(northeastLat);
-        double northeastLng = curScreen.northeast.longitude;
-        String northeastLngString = Double.toString(northeastLng);
+        LineDataSet setLine = new LineDataSet(timeSeriesCoords, "timeseries");
+        setLine.setAxisDependency(AxisDependency.LEFT);
+        List<ILineDataSet> dataSet = new ArrayList<ILineDataSet>();
+        dataSet.add(setLine);
+        LineData data = new LineData(dataSet);
+        mChart.setData(data);
+        mChart.invalidate(); // refresh
 
-            //southwest corner
-        double southwestLat = curScreen.southwest.latitude;
-        String southwestLatString = Double.toString(southwestLat);
-        double southwestLng = curScreen.southwest.longitude;
-        String southwestLngString= Double.toString(southwestLng);
+        XAxis xAxis = mChart.getXAxis();
+        //xAxis.setGranularity(1f);
+        xAxis.setValueFormatter(createDateFormatter());
+        xAxis.setLabelRotationAngle(-90);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);// minimum axis-step (interval) is 1
 
-            //northwest corner = southwestLng & northeastLat
-            //southeast corner = northeastLng & southwestLat
-
-        TextView textView = (TextView) findViewById(R.id.textView);
-        textView.setText("Northeast Latitude: " + northeastLatString + "\nNortheast Longitude: " + northeastLngString +
-                            "\nSouthwest Latitude: " + southwestLatString + "\nSouthwest Longitude: " + southwestLngString +
-                            "\n Northwest Latitude: " + northeastLatString + "\nNorthwest Longitute: " + southwestLngString +
-                            "\n Southeast Latitude: " + southwestLatString + "\n Southeast Longitude: " + northeastLngString +
-                            "\n\n\n curScre");
-       //END VISIBLE REGION'S COORDINATES
-
-
-        //OTHER PARAMS
-            //start date
-        TextView startDateText = findViewById(R.id.startDateText);
-        startDateText.setText(new StringBuilder()
-                // Month is 0 based so add 1
-                .append(Type.startDate.get(Calendar.MONTH) + 1).append("-")
-                .append(Type.startDate.get(Calendar.DAY_OF_MONTH)).append("-")
-                .append(Type.startDate.get(Calendar.YEAR)).append(" "));
-
-            //end date
-        TextView endDateText = findViewById(R.id.endDateText);
-        endDateText.setText(new StringBuilder()
-                // Month is 0 based so add 1
-                .append(Type.endDate.get(Calendar.MONTH) + 1).append("-")
-                .append(Type.endDate.get(Calendar.DAY_OF_MONTH)).append("-")
-                .append(Type.endDate.get(Calendar.YEAR)).append(" "));
-
-            //type
-
-        String text = Type.indexText;
-        TextView typeText = findViewById(R.id.typeText);
-        typeText.setText(text);
-
-
-        //END OTHER PARAMS
+    } catch (JSONException e) {
+        e.printStackTrace();
     }
+
+  }
+}
+
+
+
+//***********************************************************/
+// Map Methods
+//**********************************************************/
+
+@Override
+public void onMapReady(GoogleMap tilemap) {
+    tilemap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+    if( imageJson != null) {
+        tilemap.animateCamera(CameraUpdateFactory.newLatLngZoom(curScreen.getCenter(), 16));
+        TileProvider tileProvider = new UrlTileProvider(256, 256) {
+            @Override
+            public synchronized URL getTileUrl(int x, int y, int zoom) {
+                String s = null;
+                try {
+                   s = MAP_URL + imageJson.get("mapid") + "/" + zoom + "/" + x + "/" + y +"?token=" + imageJson.get("token");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                URL url = null;
+                try {
+                    url = new URL(s);
+                } catch (MalformedURLException e) {
+                    throw new AssertionError(e);
+                }
+                return url;
+            }
+
+        };
+
+        mapTiles = tilemap.addTileOverlay(new TileOverlayOptions().tileProvider(tileProvider));
+        mTransparencyBar.setOnSeekBarChangeListener((OnSeekBarChangeListener) this);
+    }
+}
+
+    public void setFadeIn(View v) {
+        if (mapTiles == null) {
+            return;
+        }
+        mapTiles.setFadeIn(((CheckBox) v).isChecked());
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+    }
+
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        if (mapTiles != null) {
+            mapTiles.setTransparency((float) progress / (float) TRANSPARENCY_MAX);
+        }
+    }
+
+/**********************************************************/
+
+
+
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+        Log.i("Entry selected", e.toString());
+    }
+
+
+    @Override
+    public void onNothingSelected() {
+        Log.i("Nothing selected", "Nothing selected.");
+    }
+
+
+
+//Displays date on x-axis as MMM yyyy format
+    IAxisValueFormatter createDateFormatter() {
+        IAxisValueFormatter formatter = new IAxisValueFormatter() {
+
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                Date date = new Date((long) value);
+                SimpleDateFormat fmt;
+
+                fmt = new SimpleDateFormat("MMM yyyy"); //TODO remove after tests and add switch
+                String s = fmt.format(date);
+                return s;
+            }
+
+            // we don't draw numbers, so no decimal digits needed
+            public int getDecimalDigits() {
+                return 0;
+            }
+        };
+        return formatter;
+    }
+
 }
 
