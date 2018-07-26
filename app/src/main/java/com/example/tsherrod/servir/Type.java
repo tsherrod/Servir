@@ -1,17 +1,20 @@
 package com.example.tsherrod.servir;
 
-import android.app.Activity;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DatePickerDialog.OnDateSetListener;
-import android.util.Log;
+import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.TextView;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.content.Intent;
@@ -25,11 +28,14 @@ import android.widget.Toast;
 
 public class Type extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     public static String indexText = "NDVI";
+    public static String startDateToSend;
+    public static String endDateToSend;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.type);
 
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         Spinner spinner = findViewById(R.id.type_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.type_list, android.R.layout.simple_spinner_dropdown_item);
@@ -41,15 +47,20 @@ public class Type extends AppCompatActivity implements AdapterView.OnItemSelecte
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
         toolbar.setNavigationIcon(R.drawable.houseicon);
+
+        Button moreInfoBtn = (Button) findViewById(R.id.moreinfobtn);
+        moreInfoBtn.bringToFront();
 
        /* BEGIN CALENDAR SELECTION*/
 
+        TextView dateTitleTV = (TextView) findViewById(R.id.dateTitleTV);
+
             // capture our View elements for the start date function
         startDateDisplay = (TextView) findViewById(R.id.startDateDisplay);
-        startPickDate = (Button) findViewById(R.id.startPickDate);
-
+        startPickDate = (ImageButton) findViewById(R.id.startPickDate);
+        startPickDate.bringToFront();
             // get the current date
         startDate = Calendar.getInstance();
 
@@ -62,8 +73,8 @@ public class Type extends AppCompatActivity implements AdapterView.OnItemSelecte
 
             // capture our View elements for the end date function
         endDateDisplay = (TextView) findViewById(R.id.endDateDisplay);
-        endPickDate = (Button) findViewById(R.id.endPickDate);
-
+        endPickDate = (ImageButton) findViewById(R.id.endPickDate);
+        endPickDate.bringToFront();
             // get the current date
         endDate = Calendar.getInstance();
 
@@ -77,6 +88,8 @@ public class Type extends AppCompatActivity implements AdapterView.OnItemSelecte
             // display the current date (this method is below)
         updateDisplay(startDateDisplay, startDate);
         updateDisplay(endDateDisplay, endDate);
+        endDateDisplay.setSelected(false);
+        startDateDisplay.setSelected(true);
 
        /* END CALENDAR SELECTION*/
     }
@@ -96,12 +109,13 @@ public class Type extends AppCompatActivity implements AdapterView.OnItemSelecte
 
     }
 
-    private TextView startDateDisplay;
-    private TextView endDateDisplay;
-    private Button startPickDate;
-    private Button endPickDate;
+    public TextView startDateDisplay;
+    public TextView endDateDisplay;
+    private ImageButton startPickDate;
+    private ImageButton endPickDate;
     public static Calendar startDate;
     public static Calendar endDate;
+
 
     static final int DATE_DIALOG_ID = 0;
 
@@ -116,6 +130,7 @@ public class Type extends AppCompatActivity implements AdapterView.OnItemSelecte
                         .append(date.get(Calendar.DAY_OF_MONTH)).append("-")
                         .append(date.get(Calendar.YEAR)).append(" "));
 
+
     }
 
     public void showDateDialog(TextView dateDisplay, Calendar date) {
@@ -127,11 +142,25 @@ public class Type extends AppCompatActivity implements AdapterView.OnItemSelecte
     private OnDateSetListener dateSetListener = new OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            activeDate.set(Calendar.YEAR, year);
-            activeDate.set(Calendar.MONTH, monthOfYear);
-            activeDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateDisplay(activeDateDisplay, activeDate);
-            unregisterDateDisplay();
+            if(startDate.getTime().after(endDate.getTime()) || startDate.getTime().equals(endDate.getTime())){
+                Toast.makeText(view.getContext(), "Start Date must be before End Date", Toast.LENGTH_SHORT).show();
+            }
+           /* else if (startDate.getTime().before()){
+
+            }*/
+
+            else {
+                activeDate.set(Calendar.YEAR, year);
+                activeDate.set(Calendar.MONTH, monthOfYear);
+                activeDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+       /*       startDate.set(Calendar.YEAR, year);
+                startDate.set(Calendar.MONTH, monthOfYear);
+                startDate.set(Calendar.DAY_OF_MONTH, dayOfMonth);*/
+                updateDisplay(activeDateDisplay, activeDate);
+
+
+                unregisterDateDisplay();
+            }
         }
     };
 
@@ -159,7 +188,6 @@ public class Type extends AppCompatActivity implements AdapterView.OnItemSelecte
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -167,21 +195,51 @@ public class Type extends AppCompatActivity implements AdapterView.OnItemSelecte
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-   /*     if (id == R.id.action_settings) {
+        if(id == android.R.id.home){
+            NavUtils.navigateUpFromSameTask(this);
             return true;
-        }*/
-
+        }
         return super.onOptionsItemSelected(item);
     }
-
 
     public void buttonOnClick(View v) {
         // Next button from Type to Location
         if (v.getId() == R.id.typeNext) {
+            setStartDateToSend();
             Intent i = new Intent(Type.this, MapsActivity.class);
             startActivity(i);
         }
+        else if(v.getId() == R.id.moreinfobtn){
+            MoreInfoMessage();
+        }
+
+    }
+
+    private void setStartDateToSend(){
+        startDateToSend= String.valueOf(startDateDisplay.getText());
+    }
+    public static String getStartDate(){
+        startDateToSend =startDateToSend.replace(" ", "");
+        String[] sourceSplit= startDateToSend.split("-");
+        int year= Integer.parseInt(sourceSplit[2]);
+        int month=Integer.parseInt(sourceSplit[0]);
+        int day = Integer.parseInt(sourceSplit[1]);
+
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.set(year,month-1,day);
+
+        Date date= calendar.getTime();
+        SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        return myFormat.format(date);
+    }
+    private void setEndDateToSend(){
+        endDateToSend = String.valueOf(startDateDisplay.getText());
+    }
+    public String getEndDate(){
+        return endDateDisplay.toString();
+    }
+    public void MoreInfoMessage(){
 
     }
 }

@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/mainbgearth">
 
 <!--    <android.support.design.widget.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -33,59 +34,32 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp" />
 
-    <TextView
-        android:id="@+id/selectTypeText"
-        android:layout_width="112dp"
-        android:layout_height="36dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="36dp"
-        android:layout_weight="1"
-        android:text="Type"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
     <!--Spinner to choose Type-->
-    <Spinner
-        android:id="@+id/type_spinner"
-        android:layout_width="171dp"
-        android:layout_height="42dp"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/selectTypeText"
-        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
-        android:layout_marginLeft="32dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="60dp"
-        android:textSize="17sp"
-        app:layout_constraintStart_toEndOf="@+id/selectTypeText"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
 
     <!--Next button, from type to location-->
     <Button
         android:id="@+id/typeNext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="130dp"
+        android:layout_height="55dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="68dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:onClick="buttonOnClick"
         android:text="NEXT"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.872"
+        app:layout_constraintHorizontal_bias="0.895"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/endDateDisplay"
-        app:layout_constraintVertical_bias="0.654" />
+        app:layout_constraintTop_toBottomOf="@+id/dateRangeLayout"
+        app:layout_constraintVertical_bias="1.0" />
 
-    <Button
+<!--    <Button
         android:id="@+id/startPickDate"
         android:layout_width="221dp"
         android:layout_height="58dp"
@@ -102,80 +76,204 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/startDateDisplay"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />-->
 
-    <Button
-        android:id="@+id/endPickDate"
-        android:layout_width="221dp"
-        android:layout_height="58dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
+
+    <RelativeLayout
+        android:id="@+id/typeBG"
+        android:layout_width="367dp"
+        android:layout_height="74dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginLeft="4dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="52dp"
-        android:text="Select End Date"
-        android:textSize="14sp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="98dp"
+        android:alpha="0.15"
+        android:background="@color/Gray"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/endDateDisplay"
-        app:layout_constraintTop_toBottomOf="@+id/startPickDate" />
-
-    <EditText
-        android:id="@+id/startDateDisplay"
-        android:layout_width="173dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="36dp"
-        android:ems="10"
-        android:inputType="date"
-        android:text="Start"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        app:layout_constraintHorizontal_bias="0.428"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
 
-    <EditText
-        android:id="@+id/endDateDisplay"
-        android:layout_width="175dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="60dp"
-        android:ems="10"
-        android:inputType="date"
-        android:text="End"
-        android:textAlignment="center"
-        android:textSize="20sp"
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/typeLayout"
+        android:layout_width="363dp"
+        android:layout_height="75dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+
+        android:layout_marginRight="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="82dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.461"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startDateDisplay" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar">
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="216dp"
-        android:layout_height="37dp"
-        android:layout_marginLeft="16dp"
+        <Button
+            android:id="@+id/moreinfobtn"
+            android:layout_width="38dp"
+            android:layout_height="32dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="52dp"
+            android:background="@android:color/transparent"
+            android:text="?"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp"
+            tools:layout_editor_absoluteX="68dp"
+            tools:layout_editor_absoluteY="132dp" />
+
+        <Spinner
+            android:id="@+id/type_spinner"
+            style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+            android:layout_width="171dp"
+            android:layout_height="42dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="false"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="20dp"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/selectTypeText"
+            android:layout_width="112dp"
+            android:layout_height="36dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="Index"
+            android:textColor="@color/White"
+            android:textSize="22sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/dateRangeBG"
+        android:layout_width="367dp"
+        android:layout_height="158dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="124dp"
-        android:text="Date Range"
-        android:textSize="20sp"
+        android:layout_marginTop="44dp"
+        android:alpha="0.15"
+        android:background="@color/Gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.285"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectTypeText" />
+        app:layout_constraintTop_toBottomOf="@+id/typeBG">
 
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="61dp"
-        android:layout_height="34dp"
-        android:layout_marginLeft="44dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="8dp"
-        android:text="to"
-        app:layout_constraintBottom_toTopOf="@+id/endDateDisplay"
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/dateRangeLayout"
+        android:layout_width="363dp"
+        android:layout_height="162dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/startDateDisplay"
-        app:layout_constraintVertical_bias="0.333" />
+        app:layout_constraintTop_toBottomOf="@+id/typeBG">
+
+        <TextView
+            android:id="@+id/dateTitleTV"
+            android:layout_width="143dp"
+            android:layout_height="36dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Date Range"
+            android:textColor="@color/White"
+            android:textSize="22sp"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/startPickDate"
+            android:layout_width="60dp"
+            android:layout_height="46dp"
+            android:layout_alignRight="@+id/startDateDisplay"
+            android:layout_alignTop="@+id/startDateDisplay"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/calendaricon" />
+
+        <ImageButton
+            android:id="@+id/endPickDate"
+            android:layout_width="60dp"
+            android:layout_height="46dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/endDateDisplay"
+            android:layout_marginBottom="5dp"
+            android:adjustViewBounds="true"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/calendaricon" />
+
+        <EditText
+            android:id="@+id/startDateDisplay"
+            android:layout_width="250dp"
+            android:layout_height="52dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/dateTitleTV"
+            android:layout_marginTop="5dp"
+            android:ems="10"
+            android:inputType="date"
+            android:paddingEnd="50dp"
+            android:paddingLeft="40dp"
+            android:paddingRight="50dp"
+            android:paddingStart="40dp"
+            android:text="Start"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/endDateDisplay"
+            android:layout_width="250dp"
+            android:layout_height="42dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/startDateDisplay"
+            android:layout_marginBottom="0dp"
+            android:layout_marginTop="15dp"
+            android:ems="10"
+            android:inputType="date"
+            android:paddingEnd="40dp"
+            android:paddingLeft="40dp"
+            android:paddingRight="50dp"
+            android:paddingStart="40dp"
+            android:text="End"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/startDateTV"
+            android:layout_width="91dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/dateTitleTV"
+            android:layout_centerVertical="false"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="23dp"
+            android:layout_toLeftOf="@+id/startDateDisplay"
+            android:text="Start Date"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/endDateTV"
+            android:layout_width="91dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/startDateTV"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="35dp"
+            android:layout_toLeftOf="@id/endDateDisplay"
+            android:text="End  Date"
+            android:textSize="18sp"
+            tools:layout_editor_absoluteY="471dp" />
+    </RelativeLayout>
 
 
 </android.support.constraint.ConstraintLayout>

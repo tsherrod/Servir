@@ -2,10 +2,14 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryDarkTransparent">#CC303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="White">#f8f8ff</color>
+    <color name="Gray">#636A6A</color>
     <color name="lightGray">#848484</color>
+    <color name="lightGrayTransparent">#CC848484</color>
     <color name="MidnightBlue">#191970</color>
+    <color name="InBetween">#0B0B3D</color>
     <color name="MidnightBlueDark">#020218</color>
     <color name="Black">#000000</color>
     <color name="accent_material_dark_1">#002699</color>

@@ -16,15 +16,20 @@
         android:normalScreens="true"
         android:xlargeScreens="true"/>
 
+    <!--
+        android:icon="@drawable/earthsatellite"
+        android:roundIcon="@drawable/earthsatellite"-->
+
     <application
         android:allowBackup="true"
-        android:label="NewTitle"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="ServEO"
         android:supportsRtl="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:label="ServEO">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,12 +39,9 @@
         <activity android:name=".Type"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.AppBarOverlay"/>
-        <activity android:name=".Location"
-            android:theme="@style/AppTheme.AppBarOverlay"/>
         <activity android:name=".Finish"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.AppBarOverlay">
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity"/>
@@ -61,7 +63,6 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.AppBarOverlay" />
     </application>

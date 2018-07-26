@@ -66,7 +66,8 @@
       android:inputType="textPersonName"
       android:textSize="16dp"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
+      app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+      android:imeOptions="actionSend"/>
 
   <Button
       android:id="@+id/bsearch"
@@ -112,5 +113,6 @@
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toBottomOf="@+id/bsearch"
       app:layout_constraintVertical_bias="0.914" />
+
 
 </android.support.constraint.ConstraintLayout>

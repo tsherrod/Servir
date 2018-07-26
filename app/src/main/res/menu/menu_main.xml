@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.tsherrod.servir.MainActivity">
     <item
+        android:title="@string/action_settings"
         android:icon="@drawable/houseicon"
         android:orderInCategory="101"
-        android:title="@string/action_settings" />
+         />
 </menu>

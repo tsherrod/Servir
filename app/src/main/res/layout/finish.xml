@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
- <!--   <android.support.v7.widget.Toolbar
+    <!--   <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -21,7 +21,7 @@
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="41dp"
-        android:background="?attr/colorPrimary"
+        android:background="@color/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -29,90 +29,139 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="115dp"
+        android:layout_height="131dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="156dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="156dp"
+        android:layout_marginTop="328dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.068"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.007" />
+
+    <TextView
+        android:id="@+id/loadingTV"
+        android:layout_width="246dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
+
+        android:layout_marginStart="8dp"
+        android:fontFamily="serif-monospace"
+        android:text="Loading... Please wait"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/progressBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.586"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/displayTV"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="128dp"
+        android:text="TextView"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="72dp" />
+
+
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="DOWNLOAD DATA"
+        android:textAlignment="center"
+        android:textSize="22dp"
+        android:background="@color/accent_material_dark_1"
+        android:textColor="@color/White"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="709dp"
+        />
+
     <HorizontalScrollView
         android:id="@+id/horizontalScrollView"
         android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        android:layout_marginTop="224dp"
+        android:layout_height="653dp"
+        android:layout_marginBottom="5dp"
         android:fadeScrollbars="false"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="0.0"
         tools:layout_editor_absoluteX="0dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp">
 
-            <ImageView
-                android:layout_width="347dp"
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/lineChart"
+                android:layout_width="384dp"
                 android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:background="@drawable/graph"
+                android:layout_marginRight="5dp"
+                android:background="@color/Gray"
                 tools:layout_editor_absoluteX="5dp"
-                tools:layout_editor_absoluteY="208dp" />
+                tools:layout_editor_absoluteY="208dp">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_margin="5dp"
-                android:background="@drawable/map"
-                tools:layout_editor_absoluteX="5dp"
-                tools:layout_editor_absoluteY="208dp" />
+            </com.github.mikephil.charting.charts.LineChart>
+
+            <RelativeLayout
+                android:layout_width="420dp"
+                android:layout_height="match_parent">
+
+                <fragment
+                    android:id="@+id/tilemap"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    tools:context=".Finish" />
+
+                <RelativeLayout
+                    android:layout_width="250dp"
+                    android:layout_height="25dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:background="@color/Gray">
+
+                    <TextView
+                        android:id="@+id/transparencyTV"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true"
+                        android:text="Transparency"
+                        android:textAlignment="center" />
+
+                    <SeekBar
+                        android:id="@+id/transparencySeekBar"
+                        android:layout_width="150dp"
+                        android:layout_height="25dp"
+
+                        android:layout_alignParentRight="true"
+                        android:layout_weight="1"
+                        tools:layout_editor_absoluteX="0dp"
+                        tools:layout_editor_absoluteY="338dp" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
 
         </LinearLayout>
 
-
     </HorizontalScrollView>
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="334dp"
-        android:layout_height="74dp"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
-        tools:layout_editor_absoluteX="31dp" />
-
-    <TextView
-        android:id="@+id/startDateText"
-        android:layout_width="349dp"
-        android:layout_height="35dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
-        app:layout_constraintVertical_bias="0.094"
-        tools:layout_editor_absoluteX="16dp" />
-
-    <TextView
-        android:id="@+id/endDateText"
-        android:layout_width="342dp"
-        android:layout_height="47dp"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintTop_toBottomOf="@+id/startDateText"
-        tools:layout_editor_absoluteX="16dp" />
-
-    <TextView
-        android:id="@+id/typeText"
-        android:layout_width="327dp"
-        android:layout_height="58dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/endDateText"
-        tools:layout_editor_absoluteX="16dp" />
-
-    <TextView
-        android:id="@+id/reponseText"
-        android:layout_width="323dp"
-        android:layout_height="71dp"
-        android:layout_marginTop="8dp"
-        android:text="TextView"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        tools:layout_editor_absoluteX="42dp" />
 
 
 </android.support.constraint.ConstraintLayout>

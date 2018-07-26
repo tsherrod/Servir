@@ -9,57 +9,12 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <ScrollView
-        android:id="@+id/scrollView2"
-        android:layout_width="319dp"
-        android:layout_height="269dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="180dp"
-        android:alpha=".6"
-        android:background="@color/MidnightBlueDark"
-        android:fadeScrollbars="false"
-        app:layout_constraintBottom_toTopOf="@+id/mainNext"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.117">
-        <!--About App text box-->
-        <TextView
-            android:id="@+id/aboutApp"
-            android:layout_width="303dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="408dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:maxLines="15"
-            android:padding="9dp"
-            android:scrollHorizontally="true"
-            android:scrollbarAlwaysDrawVerticalTrack="true"
-            android:scrollbars="vertical"
-            android:text="@string/about_app"
-            android:textColor="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.168"
-            tools:layout_editor_absoluteX="8dp" />
-    </ScrollView>
-
 
     <!--From Main Page to Type Page-->
+
     <Button
         android:id="@+id/mainNext"
-        android:layout_width="123dp"
+        android:layout_width="130dp"
         android:layout_height="55dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
@@ -120,6 +75,50 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="583dp" />
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="317dp"
+        android:layout_height="300dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="180dp"
+        android:alpha=".8"
+        android:background="@color/MidnightBlueDark"
+        android:fadeScrollbars="false"
+        app:layout_constraintBottom_toTopOf="@+id/mainNext"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.117">
+        <!--About App text box-->
+        <TextView
+            android:id="@+id/aboutApp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="408dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:maxLines="50"
+            android:padding="12dp"
+            android:scrollHorizontally="true"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:text="@string/about_app"
+            android:textColor="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.168" />
+    </ScrollView>
 
 
 </android.support.constraint.ConstraintLayout>

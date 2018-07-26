@@ -4,17 +4,22 @@
     <string-array name="type_list">
         <item>NDVI</item>
         <item>EVI</item>
-        <item>EVI 2</item>
+        <item>EVI2</item>
         <item>NDMI</item>
         <item>NDWI</item>
     </string-array>
 
-    <string name="about_app">About the app\n\n
-        \n     here\n\n
-
-        \n\n\n\n\n
-        \n test\n\n\n
-        end
+    <string name="about_app">Earth observation data obtained from remote sensing
+        is effective for evaluations of vegetation cover, vigor, growth dynamics,
+        and many other applications. The indices used in the application are the
+        Normalized Difference Vegetation Index (NDVI), Normalized Difference
+        Water Index (NDWI), Normalized Difference Moisture Index (NDMI), Enhanced
+        Vegetation Index (EVI), and a 2-band EVI (EVI2). These can provide
+        extremely useful information for environmental monitoring, biodiversity
+        conservation, agriculture, forestry, urban green infrastructures, and
+        other related fields.\n For information about Servir and how they use
+        this Earth Observation data, visit \n
+        <a href= "https://servirglobal.net/">https://servirglobal.net</a>\n
     </string>
     <string name="title_activity_maps">Map</string>
 
