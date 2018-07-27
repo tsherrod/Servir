@@ -5,11 +5,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.support.v4.app.NavUtils;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -35,6 +40,7 @@ public class Type extends AppCompatActivity implements AdapterView.OnItemSelecte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.type);
 
+
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
         Spinner spinner = findViewById(R.id.type_spinner);
@@ -50,7 +56,9 @@ public class Type extends AppCompatActivity implements AdapterView.OnItemSelecte
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         toolbar.setNavigationIcon(R.drawable.houseicon);
 
+        View typeLayout = findViewById(R.id.typeLayout);
         Button moreInfoBtn = (Button) findViewById(R.id.moreinfobtn);
+        moreInfoBtn.setClickable(true);
         moreInfoBtn.bringToFront();
 
        /* BEGIN CALENDAR SELECTION*/
@@ -210,7 +218,7 @@ public class Type extends AppCompatActivity implements AdapterView.OnItemSelecte
             startActivity(i);
         }
         else if(v.getId() == R.id.moreinfobtn){
-            MoreInfoMessage();
+            showInfo();
         }
 
     }
@@ -239,8 +247,31 @@ public class Type extends AppCompatActivity implements AdapterView.OnItemSelecte
     public String getEndDate(){
         return endDateDisplay.toString();
     }
-    public void MoreInfoMessage(){
+    public void showInfo(){
+        FragmentManager manager2= getFragmentManager();
+        Type.MoreInfoIndex moreInfo = new Type.MoreInfoIndex();
+        moreInfo.show(manager2, "my dialog 2");
+    }
+    //TODO make own class
+    public static class MoreInfoIndex extends DialogFragment implements View.OnClickListener {
+        Button indexgotit;
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+            View view=inflater.inflate(R.layout.index_info, null);
+            indexgotit=(Button) view.findViewById(R.id.indexgotitbtn);
+            indexgotit.setOnClickListener(this);
 
+            setCancelable(false);
+            return view;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(v.getId()==R.id.indexgotitbtn){
+                dismiss();
+
+            }
+        }
     }
 }
 

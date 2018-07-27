@@ -2,6 +2,7 @@ package com.example.tsherrod.servir;
 
 
 import android.annotation.SuppressLint;
+import android.R;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -84,9 +85,10 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import static com.example.tsherrod.servir.MapsActivity.getTileProvider;
+//import static com.example.tsherrod.servir.MapsActivity.getTileProvider;
 import static com.example.tsherrod.servir.MapsActivity.imageJson;
 import static com.example.tsherrod.servir.MapsActivity.mMap;
+import static com.example.tsherrod.servir.MapsActivity.mapTiles;
 import static com.example.tsherrod.servir.MapsActivity.timeJson;
 
 public class Finish extends AppCompatActivity implements OnChartValueSelectedListener, OnSeekBarChangeListener, OnMapReadyCallback {
@@ -153,60 +155,16 @@ public class Finish extends AppCompatActivity implements OnChartValueSelectedLis
             OkHttpClient client = b.build();
             MediaType JSON = MediaType.parse("application/json;charset=utf-8");
 
-            //builds timeSeriesBody
-            RequestBody body = RequestBody.create(JSON, timeSeriesBody(curScreen).toString());
             //builds imageCollectionBody
             RequestBody body2 = RequestBody.create(JSON, imageCollectionBody(curScreen).toString());
 
-            Log.d("OKHTTP3", "RequestBody Created.");
-            //Time Series Request
-            final Request newReq = new Request.Builder()
-                    .url(url)
-                    .post(body)
-                    .build();
+            Log.d("OKHTTP3", "Image RequestBody Created.");
+
             //Image Collection Request
             final Request newReq2 = new Request.Builder()
                     .url(url2)
                     .post(body2)
                     .build();
-
-            //Time Series Call
-            client.newCall(newReq).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    //TODO what to do when time call fails
-                    call.cancel();
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    try {
-                        final String response1 = response.body().string();
-
-                        Finish.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    //After receiving response, builds graph
-                                    //received data in format:
-                                    //      {"timeseries":[[date, value], [date, value],...]}
-
-                                    timeJson = new JSONObject(response1);
-                                    horizontalScrollView.setVisibility(View.VISIBLE);
-                                    loadingTV.setVisibility(View.INVISIBLE);
-                                    progressBar.setVisibility(View.INVISIBLE);
-                                    createLineGraph();
-                                    //txtstring.setText(json.getJSONArray("timeseries").toString());
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
 
             //Image Collection Call
             client.newCall(newReq2).enqueue(new Callback() {
@@ -225,7 +183,9 @@ public class Finish extends AppCompatActivity implements OnChartValueSelectedLis
                         public void run() {
                             try {
                                 imageJson = new JSONObject(response2);
+                                createLineGraph();
                                 createMapLayer(tilemap);
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -444,7 +404,6 @@ public class Finish extends AppCompatActivity implements OnChartValueSelectedLis
                Log.d("OKHTTP3", "running TileURL");
                Log.d("OKHTTP3", "imageJSON: " +  imageJson.toString());
 
-
                 TileProvider tileProvider = new UrlTileProvider(256, 256) {
 
                     @Override
@@ -469,16 +428,11 @@ public class Finish extends AppCompatActivity implements OnChartValueSelectedLis
                     }
                 };
 
+                //adds tile overlay to map
                 mapTiles = tilemap.addTileOverlay(new TileOverlayOptions().tileProvider(tileProvider));
                 mTransparencyBar.setOnSeekBarChangeListener((OnSeekBarChangeListener) this);
                 mTransparencyBar.bringToFront();
 
-
-            //TileProvider tileProvider = MapsActivity.getTileProvider();
-
-        //adds tile overlay to map
-        /*mapTiles = tilemap.addTileOverlay(new TileOverlayOptions().tileProvider(getTileProvider()));
-        mTransparencyBar.setOnSeekBarChangeListener((OnSeekBarChangeListener) this);*/
     }
 
     //Displays date on x-axis as MMM yyyy format
@@ -508,13 +462,13 @@ public class Finish extends AppCompatActivity implements OnChartValueSelectedLis
         tilemap.animateCamera(CameraUpdateFactory.newLatLngZoom(curScreen.getCenter(),mMap.getCameraPosition().zoom));
     }
 
-    public void setFadeIn(View v) {
+  /*  public void setFadeIn(View v) {
         if (mapTiles == null) {
             return;
         }
         mapTiles.setFadeIn(((CheckBox) v).isChecked());
     }
-
+*/
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
     }
@@ -577,6 +531,7 @@ public class Finish extends AppCompatActivity implements OnChartValueSelectedLis
             return mOffset;
         }
     }
+
 
 }
 

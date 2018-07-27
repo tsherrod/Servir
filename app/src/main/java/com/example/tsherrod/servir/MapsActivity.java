@@ -1,7 +1,14 @@
 package com.example.tsherrod.servir;
 
 import android.Manifest;
+import android.R;
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
@@ -17,7 +24,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
@@ -29,6 +38,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.android.gms.maps.model.TileProvider;
 import com.google.android.gms.maps.model.UrlTileProvider;
@@ -45,6 +55,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -71,6 +82,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
@@ -106,10 +118,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final int MY_REQUEST_INT = 177;
     private Context mcontext;
     public static GoogleMap mMap;
+    public static GoogleMap tilemap;
+    public static TileOverlay mapTiles;
     public static JSONObject timeJson;
+    public static JSONArray timeName;
     public static JSONObject imageJson;
     private static TileProvider tileProvider;
     public static TileProvider tileProviderToSend;
+    public static ProgressBar mapProgressBar;
+    public static SupportMapFragment mapFragment;
+    public static Button mapsNext;
+    public static View mapsView;
 
     public String url = "http://collect.earth:8888/timeSeriesIndex2";
     public String url2 = "http://collect.earth:8888/ImageCollectionbyIndex";
@@ -119,6 +138,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        mapsView = findViewById(R.id.maplayout);
+        mapsNext = (Button) findViewById(R.id.mapsNext);
+        mapProgressBar=(ProgressBar) findViewById(R.id.mapProgressBar);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
@@ -143,7 +166,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
@@ -209,18 +232,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void buttonOnClick(View v) {
         if (v.getId() == R.id.mapsNext) {
             LatLngBounds curScreen = mMap.getProjection().getVisibleRegion().latLngBounds;
-            //doPostRequest(curScreen);
-            Intent i = new Intent(MapsActivity.this, Finish.class);
-            startActivity(i);
+            doPostRequest(curScreen);
+            /*Intent i = new Intent(MapsActivity.this, Finish.class);
+            startActivity(i);*/
         }
     }
 
     public void doPostRequest(LatLngBounds curScreen) {
         if (isNetworkAvailable()) {
+            mapsNext.setClickable(false);
+            mapsView.setAlpha((float) 0.5);
+            mapProgressBar.setVisibility(View.VISIBLE);
+            mMap.getUiSettings().setAllGesturesEnabled(false);
             OkHttpClient.Builder b = new OkHttpClient.Builder();
             b.readTimeout(5, TimeUnit.MINUTES);
             b.writeTimeout(5, TimeUnit.MINUTES);
-            final OkHttpClient client = b.build();
+            OkHttpClient client = b.build();
             MediaType JSON = MediaType.parse("application/json;charset=utf-8");
 
             //builds timeSeriesBody
@@ -234,26 +261,24 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     .url(url)
                     .post(body)
                     .build();
-            //Image Collection Request
-            final Request newReq2 = new Request.Builder()
-                    .url(url2)
-                    .post(body2)
-                    .build();
 
             //Time Series Call
             client.newCall(newReq).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     //TODO what to do when time call fails
+                    mapProgressBar.setVisibility(View.INVISIBLE);
                     call.cancel();
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    try {
+                    final String response1 = response.body().string();
+                    Log.d("OKHTTP3", "time response: " + response1);
 
-                        final String response1 = response.body().string();
-                        Log.d("OKHTTP3", "Time Series Responded: " + response1);
+                    //if the timeseries response starts with 't', store the response in a JSONObject
+                    //  else, display an error dialog
+                    if(response1.charAt(2)== 't'){
                         MapsActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -263,10 +288,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     //      {"timeseries":[[date, value], [date, value],...]}
 
                                     timeJson = new JSONObject(response1);
-                                    Log.d("OKHTTP3", "Time Series JSON created");
-                                    doImageCall(client, newReq2);
-
-
+                                    mapsView.setAlpha((float) 1.0);
+                                    mapProgressBar.setVisibility(View.INVISIBLE);
+                                    mapsNext.setClickable(true);
+                                    mMap.getUiSettings().setAllGesturesEnabled(true);
+                                    Intent i = new Intent(MapsActivity.this, Finish.class);
+                                    startActivity(i);
                                     //horizontalScrollView.setVisibility(View.VISIBLE);
                                     //loadingTV.setVisibility(View.INVISIBLE);
                                     //progressBar.setVisibility(View.INVISIBLE);
@@ -277,78 +304,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 }
                             }
                         });
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    }
+
+                    else{
+                        mapProgressBar.setVisibility(View.INVISIBLE);
+
+
+                        showDialog();
                     }
                 }
             });
 
 
+
         }
     }
 
-    public void doImageCall(OkHttpClient client, Request newReq2){
 
-        Log.d("OKHTTP3", "doImageCall called");
-        //Image Collection Call
-        client.newCall(newReq2).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                //TODO what to do when image call fails
-                call.cancel();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String response2 = response.body().string();
-
-
-                        try {
-                            imageJson = new JSONObject(response2);
-                            if(imageJson!=null){
-                                Log.d("OKHTTP3", "Image Json not null" + imageJson.toString());
-                            }
-                      /*      tileProvider = new UrlTileProvider(256, 256) {
-
-                                @Override
-                                public synchronized URL getTileUrl(int x, int y, int zoom) {
-                                    Log.d("OKHTTP3", "getting Tile URL");
-                                    String s = null;
-                                    try {
-                                        s = MAP_URL + imageJson.get("mapid") + "/" + zoom + "/" + x + "/" + y +"?token=" + imageJson.get("token");
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                        Log.d("OKHTTP3", "Tile URL Error");
-                                    }
-                                    URL url = null;
-                                    try {
-                                        url = new URL(s);
-                                    } catch (MalformedURLException e) {
-                                        Log.d("OKHTTP3", "Malformed Tile URL");
-                                        throw new AssertionError(e);
-                                    }
-                                    return url;
-                                }
-                            };*/
-
-
-                           // setTileProvider(tileProvider);
-
-                            Intent i = new Intent(MapsActivity.this, Finish.class);
-                            startActivity(i);
-                            //Finish.mapTiles = Finish.tilemap.addTileOverlay(new TileOverlayOptions().tileProvider(tileProvider));
-                            //createMapLayer(tilemap);
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-
-                    }
-                });
-
-    }
     // TODO network available function
     private boolean isNetworkAvailable() {
 
@@ -488,13 +460,37 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return date;
 
     }
+    public void showDialog(){
+        Log.d("OKHTTP3", "entered show dialogue");
+        FragmentManager manager= getFragmentManager();
+        LargeAreaFragment largeArea = new LargeAreaFragment();
+        largeArea.show(manager, "my dialog");
+    }
+    @SuppressLint("ValidFragment")
+    public static class LargeAreaFragment extends DialogFragment implements View.OnClickListener {
+        Button gotit;
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+            View view=inflater.inflate(R.layout.large_area, null);
+            gotit=(Button) view.findViewById(R.id.gotit);
+            gotit.setOnClickListener(this);
 
-    private void setTileProvider(TileProvider tileProvider){
-        tileProviderToSend =tileProvider;
+            setCancelable(false);
+            return view;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(v.getId()==R.id.gotit){
+                dismiss();
+                mapsNext.setClickable(true);
+                mapsView.setAlpha((float) 0.5);
+                mMap.getUiSettings().setAllGesturesEnabled(true);
+            }
+        }
     }
-    public static TileProvider getTileProvider(){
-        return tileProviderToSend;
-    }
+
+
 }
 
 
